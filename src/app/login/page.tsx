@@ -10,22 +10,26 @@ const LoginPage = () => {
 	const router = useRouter();
 
 	const [user, setUser] = React.useState({
-		username: "",
+		email: "",
 		password: "",
 	});
 
 	const [loading, setLoading] = React.useState(false);
 
 	const onLogin = async () => {
-		if (!user.username || !user.password) {
-			toast.error("Please enter both username and password");
+		if (!user.email || !user.password) {
+			toast.error("Please enter both email and password");
 			return;
 		}
 
 		try {
+			setLoading(true);
+			const response = await axios.post("/api/v1/users/login", user);
+			const userId = response.data.userId;
+			toast.success("Login successful!");
+			router.push(`/profile/${userId}`);
 		} catch (error: any) {
 			toast.error(error.response?.data?.error || "Login failed");
-		} finally {
 			setLoading(false);
 		}
 	};
@@ -47,14 +51,14 @@ const LoginPage = () => {
 				<div className="space-y-4">
 					<div className="space-y-1">
 						<label className="text-xs font-medium text-zinc-600">
-							Username
+							Username/Email
 						</label>
 						<input
-							type="text"
-							placeholder="DhairyaAnchalRockStar"
-							value={user.username}
+							type="email"
+							placeholder="you@example.com"
+							value={user.email}
 							onChange={(e) =>
-								setUser({ ...user, username: e.target.value })
+								setUser({ ...user, email: e.target.value })
 							}
 							className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
 						/>

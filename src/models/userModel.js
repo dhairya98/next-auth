@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
 		default: false,
 	},
 	isAdmin: {
-		type: Integer,
+		type: Boolean,
 		default: false,
 	},
 	forgotPasswordToken: String,
