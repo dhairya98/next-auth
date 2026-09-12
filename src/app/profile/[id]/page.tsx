@@ -14,7 +14,6 @@ const UserProfilePage = () => {
 	const router = useRouter();
 	const params = useParams();
 	const { id } = params;
-	console.log("User ID from params:", id);
 
 	const [data, setData] = React.useState<UserProfile | null>(null);
 	const [loading, setLoading] = React.useState<boolean>(true);

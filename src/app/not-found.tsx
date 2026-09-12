@@ -20,7 +20,7 @@ export default function NotFound() {
 
 				<div className="pt-2">
 					<Link
-						href="/"
+						href="/profile"
 						className="block w-full text-center rounded-lg bg-black py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.98]"
 					>
 						Back to Home
