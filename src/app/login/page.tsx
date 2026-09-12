@@ -27,7 +27,16 @@ const LoginPage = () => {
 			const response = await axios.post("/api/v1/users/login", user);
 			const userId = response.data.userId;
 			toast.success("Login successful!");
-			router.push(`/profile/${userId}`);
+			console.log("Response", response);
+			localStorage.setItem(
+				"userProfile",
+				JSON.stringify({
+					email: response.data.email,
+					username: response.data.username,
+					userId: response.data.userId,
+				}),
+			);
+			router.push(`profile/${userId}`);
 		} catch (error: any) {
 			toast.error(error.response?.data?.error || "Login failed");
 			setLoading(false);

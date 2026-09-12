@@ -48,6 +48,8 @@ export async function POST(request: NextRequest) {
 		const response = NextResponse.json({
 			message: "User logged in successfully",
 			userId: existingUser._id.toString(),
+			email: existingUser.email,
+			username: existingUser.username,
 		});
 		response.cookies.set("token", token, {
 			httpOnly: true,

@@ -6,21 +6,60 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 interface UserProfile {
-	name: string;
 	username: string;
+	email: string;
 }
 
 const UserProfilePage = () => {
 	const router = useRouter();
 	const params = useParams();
 	const { id } = params;
+	console.log("User ID from params:", id);
 
 	const [data, setData] = React.useState<UserProfile | null>(null);
 	const [loading, setLoading] = React.useState<boolean>(true);
 
-	React.useEffect(() => {}, [id]);
+	// React.useEffect(() => {
+	// 	const savedProfile = localStorage.getItem("userProfile");
 
-	const onLogout = async () => {};
+	// 	if (!id || !savedProfile) {
+	// 		toast.error("Please login to access your profile");
+	// 		router.push("/login");
+	// 		return;
+	// 	}
+
+	// 	const loggedInUser = JSON.parse(savedProfile);
+
+	// 	if (id !== loggedInUser.userId) {
+	// 		toast.error("Unauthorized: You cannot access this profile!");
+	// 		router.push(`/profile/${loggedInUser.userId}`);
+	// 	}
+	// }, [id, router]);
+
+	React.useEffect(() => {
+		const savedData = localStorage.getItem("userProfile");
+
+		if (savedData) {
+			setData(JSON.parse(savedData));
+		}
+		setLoading(false);
+	}, [id]);
+
+	const onLogout = async () => {
+		try {
+			setLoading(true);
+
+			await axios.post("/api/v1/users/logout");
+
+			toast.success("Logged out successfully");
+			localStorage.removeItem("userProfile");
+			router.push("/login");
+		} catch (error: any) {
+			console.error("Logout Error:", error);
+			toast.error("Logout failed");
+			setLoading(false);
+		}
+	};
 
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans px-4">
@@ -31,11 +70,13 @@ const UserProfilePage = () => {
 					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-900 text-xl font-bold text-white shadow-inner">
 						{loading
 							? "..."
-							: data?.name?.charAt(0).toUpperCase() || "U"}
+							: data?.username?.charAt(0).toUpperCase() || "U"}
 					</div>
 					<div className="space-y-1">
 						<h1 className="text-2xl font-bold tracking-tight text-zinc-900">
-							{loading ? "Loading..." : `${data?.name}'s Profile`}
+							{loading
+								? "Loading..."
+								: `${data?.username}'s Profile`}
 						</h1>
 						<p className="text-xs text-zinc-400 font-medium uppercase tracking-wider">
 							User Profile Page
@@ -53,15 +94,6 @@ const UserProfilePage = () => {
 						<div className="space-y-3">
 							<div className="flex items-center justify-between rounded-xl bg-zinc-50/70 border border-zinc-100 px-4 py-3 text-sm">
 								<span className="font-medium text-zinc-500">
-									Full Name
-								</span>
-								<span className="font-semibold text-zinc-900">
-									{data?.name || "N/A"}
-								</span>
-							</div>
-
-							<div className="flex items-center justify-between rounded-xl bg-zinc-50/70 border border-zinc-100 px-4 py-3 text-sm">
-								<span className="font-medium text-zinc-500">
 									Username
 								</span>
 								<span className="font-semibold text-zinc-900">
@@ -69,13 +101,12 @@ const UserProfilePage = () => {
 								</span>
 							</div>
 
-							{/* 3. Displaying the exact dynamic ID grabbed from your [id] folder URL layout */}
 							<div className="flex items-center justify-between rounded-xl bg-zinc-50/70 border border-zinc-100 px-4 py-3 text-sm">
 								<span className="font-medium text-zinc-500">
-									URL Dynamic ID
+									Email
 								</span>
 								<span className="font-mono text-xs text-black bg-emerald-100/70 border border-emerald-200 rounded px-1.5 py-0.5 shadow-2xs font-semibold">
-									{id}
+									{data?.email || "email"}
 								</span>
 							</div>
 						</div>
