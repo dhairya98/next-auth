@@ -33,14 +33,20 @@ const SignupPage = () => {
 			toast.error("Passwords do not match!");
 			return;
 		}
+
 		const { confirmPassword, ...backendPayload } = user;
 
 		try {
+			setLoading(true);
+
 			const response = await axios.post(
 				"/api/v1/users/signup",
 				backendPayload,
 			);
-			toast.success("Account created successfully!");
+
+			toast.success(
+				"Account created successfully! Please verify your email.",
+			);
 			router.push("/login");
 		} catch (error: any) {
 			console.error(error);
